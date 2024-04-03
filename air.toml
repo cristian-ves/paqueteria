@@ -1,0 +1,9 @@
+[build]
+# Watch these file extensions.
+files = ["*.go"]
+
+# Exclude directory/file names.
+exclude_dirs = ["tmp", "vendor", "node_modules", ".git"]
+
+# This will kill and rebuild the project, then rerun it.
+cmd = "go run main.go"
