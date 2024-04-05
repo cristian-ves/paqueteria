@@ -120,6 +120,40 @@ func GetUsuarioByUsername(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"usuario": user})
 }
 
+func Login(c *gin.Context) {
+	var body struct {
+		Username string
+		Password string
+	}
+
+	if err := c.BindJSON(&body); err != nil {
+		handleError(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+
+	sqlStatement := "SELECT * FROM usuario WHERE username = ? AND password = ?"
+	row := initializers.DB.QueryRow(sqlStatement, body.Username, body.Password)
+
+	var user struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+		Nombre   string `json:"nombre"`
+		Activo   bool   `json:"activo"`
+		Rol      int    `json:"rol"`
+	}
+	err := row.Scan(&user.Username, &user.Password, &user.Nombre, &user.Activo, &user.Rol)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+			return
+		}
+		handleError(c, http.StatusInternalServerError, "Error retrieving user", err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"usuario": user})
+}
+
 func UpdateUser(c *gin.Context) {
 	var body struct {
 		Username string
