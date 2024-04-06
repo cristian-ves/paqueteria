@@ -37,5 +37,9 @@ func main() {
 	r.GET("/ruta/puntos", controllers.GetPuntosControlRuta)
 	r.DELETE("/ruta/punto", controllers.RemovePuntoControl)
 
+	//tarifas globales
+	r.GET("/tarifas", controllers.GetDatosGlobales)
+	r.PUT("/tarifas", controllers.UpdateDatosGlobales)
+
 	r.Run()
 }
